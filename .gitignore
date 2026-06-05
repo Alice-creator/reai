@@ -1,5 +1,8 @@
 # Compiled CUDA binaries
-cuda-learn/kernels/**/[a-z]*[!.cu]
+cuda-learn/kernels/**/relu
+cuda-learn/kernels/**/test_relu
+cuda-learn/kernels/**/vector_add
+cuda-learn/kernels/**/vector_sub
 cuda-learn/kernels/**/*.o
 
 # Python
