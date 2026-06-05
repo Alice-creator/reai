@@ -1,0 +1,14 @@
+# Compiled CUDA binaries
+cuda-learn/kernels/**/[a-z]*[!.cu]
+cuda-learn/kernels/**/*.o
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# OS
+.DS_Store
+*.deb
