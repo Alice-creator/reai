@@ -1683,8 +1683,6 @@ HTML = r"""<!DOCTYPE html>
       <div id="lp-viz-html" style="display:none;border-bottom:1px solid var(--border);"></div>
       <canvas id="viz-canvas" width="480" height="220"></canvas>
       <div class="theory-body">
-        <div class="theory-topic" id="lp-topic"></div>
-        <div class="theory-title" id="lp-theory-title"></div>
         <div id="lp-description"></div>
       </div>
     </div>
@@ -1998,8 +1996,6 @@ function openLesson(slug, chipEl) {
 
   document.getElementById('lp-title').textContent        = lesson.title;
   document.getElementById('lp-section').textContent      = lesson.section;
-  document.getElementById('lp-topic').textContent        = lesson.topic;
-  document.getElementById('lp-theory-title').textContent = lesson.title;
   document.getElementById('lp-link').href                = lesson.url;
   document.getElementById('lp-filename').textContent     = slug + '.cu';
 
