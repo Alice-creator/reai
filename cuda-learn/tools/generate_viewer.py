@@ -1719,7 +1719,7 @@ const PHASES = [
       {t:'Swish',              s:'done', slug:'swish'},
     ]},
     {name:'CUDA Concepts', problems:[
-      {t:'Thread / Block / Grid', s:'done',   slug:null},
+      {t:'Thread / Block / Grid', s:'done',   slug:'thread-block-grid'},
       {t:'2D / 3D Index Formula', s:'done',   slug:'index-2d-3d'},
       {t:'Memory Coalescing',     s:'locked', slug:null},
       {t:'Shared Memory',         s:'locked', slug:null},
