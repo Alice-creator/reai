@@ -15,11 +15,12 @@ for f in LESSONS_DIR.glob('*.json'):
     d = json.loads(f.read_text())
     slug = d.get('slug', f.stem)
     lessons[slug] = {
-        'title':       d.get('title', slug),
-        'section':     d.get('section', ''),
-        'topic':       d.get('topic', ''),
-        'description': d.get('description', '')[:4000],
-        'url':         d.get('url', ''),
+        'title':        d.get('title', slug),
+        'section':      d.get('section', ''),
+        'topic':        d.get('topic', ''),
+        'description':  d.get('description', '')[:4000],
+        'url':          d.get('url', ''),
+        'html_content': d.get('html_content', ''),
     }
 
 # ── CUDA kernel templates ────────────────────────────────────────────────────
@@ -682,6 +683,34 @@ __global__ void prefix_sum(const float* in, float* out, int n) {
             out[i] = out[i-1] + in[i];
     }
 }
+''',
+
+'index-2d-3d': '''\
+// 2D Index Formula — matrix transpose
+// Proof: in_index = row*cols+col, out_index = new_row*new_cols+new_col
+//   new_row=col, new_cols=rows, new_col=row  →  out[col*rows+row]
+#include <cuda_runtime.h>
+
+__global__ void matrix_transpose(const float* in, float* out, int rows, int cols) {
+    int row = blockIdx.y * blockDim.y + threadIdx.y;
+    int col = blockIdx.x * blockDim.x + threadIdx.x;
+
+    int new_row  = col;   // row trong output = original col
+    int new_col  = row;   // col trong output = original row
+    int new_cols = rows;  // width của output = original rows
+
+    if (row >= rows || col >= cols) return;
+    out[new_row * new_cols + new_col] = in[row * cols + col];
+}
+
+// Launch:
+// dim3 block(16, 16);
+// dim3 grid((cols+15)/16, (rows+15)/16);
+// matrix_transpose<<<grid, block>>>(d_in, d_out, rows, cols);
+
+// 3D extension — batch processing:
+// dim3 grid((cols+15)/16, (rows+15)/16, N);  // z = batch index
+// int batch = blockIdx.z;
 ''',
 
 'gram-schmidt': '''\
@@ -1507,13 +1536,14 @@ lessons_js_entries = []
 for slug, data in lessons.items():
     tmpl = get_template(slug, data)
     entry = {
-        'slug':        slug,
-        'title':       data['title'],
-        'section':     data['section'],
-        'topic':       data['topic'],
-        'description': data['description'],
-        'url':         data['url'],
-        'template':    tmpl,
+        'slug':         slug,
+        'title':        data['title'],
+        'section':      data['section'],
+        'topic':        data['topic'],
+        'description':  data['description'],
+        'url':          data['url'],
+        'template':     tmpl,
+        'html_content': data.get('html_content', ''),
     }
     lessons_js_entries.append(entry)
 
@@ -1650,6 +1680,7 @@ HTML = r"""<!DOCTYPE html>
       <a id="lp-link" href="#" target="_blank" class="tab-link">↗ tensortonic</a>
     </div>
     <div id="tab-theory" class="tab-content active">
+      <div id="lp-viz-html" style="display:none;border-bottom:1px solid var(--border);"></div>
       <canvas id="viz-canvas" width="480" height="220"></canvas>
       <div class="theory-body">
         <div class="theory-topic" id="lp-topic"></div>
@@ -1689,7 +1720,7 @@ const PHASES = [
     ]},
     {name:'CUDA Concepts', problems:[
       {t:'Thread / Block / Grid', s:'done',   slug:null},
-      {t:'2D / 3D Index Formula', s:'locked', slug:null},
+      {t:'2D / 3D Index Formula', s:'done',   slug:'index-2d-3d'},
       {t:'Memory Coalescing',     s:'locked', slug:null},
       {t:'Shared Memory',         s:'locked', slug:null},
     ]},
@@ -1995,14 +2026,21 @@ function openLesson(slug, chipEl) {
   document.getElementById('app-body').classList.add('panel-open');
   switchTab('theory');
 
+  const vizHtml   = document.getElementById('lp-viz-html');
   const vizCanvas = document.getElementById('viz-canvas');
-  if (VISUALIZATIONS && VISUALIZATIONS[slug]) {
+  if (lesson.html_content) {
+    vizHtml.innerHTML = lesson.html_content;
+    vizHtml.style.display = 'block';
+    vizCanvas.style.display = 'none';
+  } else if (VISUALIZATIONS && VISUALIZATIONS[slug]) {
+    vizHtml.style.display = 'none';
     vizCanvas.style.display = 'block';
     const ctx = vizCanvas.getContext('2d');
     ctx.clearRect(0, 0, vizCanvas.width, vizCanvas.height);
     try { VISUALIZATIONS[slug](vizCanvas, vizCanvas.width, vizCanvas.height, ctx); }
     catch(e) { console.warn('viz error', slug, e); }
   } else {
+    vizHtml.style.display = 'none';
     vizCanvas.style.display = 'none';
   }
 }

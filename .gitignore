@@ -3,6 +3,8 @@ cuda-learn/kernels/**/relu
 cuda-learn/kernels/**/test_relu
 cuda-learn/kernels/**/sigmoid
 cuda-learn/kernels/**/test_sigmoid
+cuda-learn/kernels/**/matrix_transpose
+cuda-learn/kernels/**/test_matrix_transpose
 cuda-learn/kernels/**/vector_add
 cuda-learn/kernels/**/vector_sub
 cuda-learn/kernels/**/*.o
