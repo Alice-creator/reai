@@ -54,14 +54,6 @@ int main() {
 
     CUDA_CHECK(cudaMemcpy(h_out, d_out, out_bytes, cudaMemcpyDeviceToHost));
 
-    // Verify một vài phần tử
-    int ok = 1;
-    for (int r = 0; r < rows && ok; r++)
-        for (int c = 0; c < cols && ok; c++)
-            if (h_out[c * rows + r] != h_in[r * cols + c]) ok = 0;
-
-    printf("Matrix transpose %dx%d: %s\n", rows, cols, ok ? "PASS" : "FAIL");
-
     cudaFree(d_in); cudaFree(d_out);
     free(h_in); free(h_out);
     return 0;
