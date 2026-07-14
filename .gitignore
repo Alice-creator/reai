@@ -20,5 +20,15 @@ venv/
 .DS_Store
 *.deb
 
+# Scraped lesson content (from tensortonic.com) — kept local, not committed.
+# Present on disk so generate_viewer.py still builds roadmap.html.
+cuda-learn/lessons/*.json
+# ...except the hand-authored CUDA lessons (my own work):
+!cuda-learn/lessons/thread-block-grid.json
+!cuda-learn/lessons/index-2d-3d.json
+
+# Generated viewer — embeds scraped lesson text; rebuild with generate_viewer.py
+cuda-learn/roadmap.html
+
 # Claude
 CLAUDE.md
