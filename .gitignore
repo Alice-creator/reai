@@ -26,6 +26,7 @@ cuda-learn/lessons/*.json
 # ...except the hand-authored CUDA lessons (my own work):
 !cuda-learn/lessons/thread-block-grid.json
 !cuda-learn/lessons/index-2d-3d.json
+!cuda-learn/lessons/memory-coalescing.json
 
 # Generated viewer — embeds scraped lesson text; rebuild with generate_viewer.py
 cuda-learn/roadmap.html
